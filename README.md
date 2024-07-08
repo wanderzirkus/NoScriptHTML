@@ -29,8 +29,46 @@ In HTML, to comply to the standart, the data- tag is used to define and inject c
 | ------------- | ------------- |
 | data-cmp-definition="componentname" | define a component |
 | data-cmp-inject="componentname" | inject a component |
-| data-cmp-param-[0-9]+="parametervalue" | define / pass a parameter used by a component |
+| data-cmp-param-[1-9]+="parametervalue" | define / pass a parameter used by a component |
 | data-cmp-slot="slotname" | define / use slots on component injection |
 
 Note:
-Components can be injected into components, also.
+- Components can be injected into components, also.
+- Components can be placed anywhere (own .html file, in a file together with other HTML nodes, ...)
+- Components are removed from the files during the build
+- empty files are deleted at the end of the build (e.g., files containing only components in source dir)
+- hidden files are NOT copied into dist dir
+- a slot will be filled with multiple HTML nodes, if they all share the same slot name. They are filled in the order given in the source file
+
+# Examples
+
+## Basic usage
+
+    <div data-cmp-inject="AwesomeComponent" data-cmp-param-1="Hello">
+
+    <div data-cmp-definition="AwesomeComponent">
+        data-cmp-param-1 World!
+    </div>
+
+will be built to
+
+    <div>
+        Hello World!
+    </div>
+
+## Using slots
+
+    <div data-cmp-inject="AwesomeComponent">
+        <span data-cmp-slot="CoolSlot">Hello</span>
+        <span data-cmp-slot="CoolSlot">World!</span>
+    </div>
+
+    <div data-cmp-definition="AwesomeComponent">
+        <div data-cmp-slot="CoolSlot">
+    </div>
+
+will be built to
+
+    <div>
+        Hello World!
+    </div>
