@@ -3,7 +3,7 @@ using System.Reflection;
 using HtmlAgilityPack;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HTML_Components;
+namespace NoScriptHTML;
 
 class Program
 {
