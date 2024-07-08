@@ -2,12 +2,23 @@ using System.Data;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
-public class Substitution {
+public class Substitution : IProcessFiles {
 
    private IDictionary<string, HtmlNode> myComponentProcessedDefinitions = new Dictionary<string, HtmlNode>();    
 
-    public void Process(IDictionary<string, HtmlDocument> htmlDocumentsForProcessing)
+    public void Process(string sourceDirectory, string distDirectory)
     {
+        string[] fileNames = Directory.GetFiles(sourceDirectory, "*.html", SearchOption.AllDirectories);
+
+        IDictionary<string, HtmlDocument> htmlDocumentsForProcessing = new Dictionary<string, HtmlDocument>();
+        foreach(string fileName in fileNames)
+        {
+            Console.WriteLine("- " + fileName);
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.Load(fileName);
+            htmlDocumentsForProcessing.Add(Path.GetRelativePath(sourceDirectory, fileName), htmlDocument);
+        }
+
         IDictionary<string, HtmlNode> componentDefinitions = new Dictionary<string, HtmlNode>();
         
         NodeSelectionToDictionary(htmlDocumentsForProcessing, "data-cmp-definition", componentDefinitions);
@@ -15,6 +26,16 @@ public class Substitution {
         ProcessComponentsRecursive(componentDefinitions);
 
         ProcessInjections(GetNodesFromDocuments(htmlDocumentsForProcessing, "data-cmp-inject"));
+
+        foreach (KeyValuePair<string, HtmlDocument> htmlDocument in htmlDocumentsForProcessing)
+        {
+            if (htmlDocument.Value.DocumentNode.HasChildNodes)
+            {
+                htmlDocument.Value.Save(Path.Combine(distDirectory, htmlDocument.Key));
+            } else {
+                File.Delete(Path.Combine(distDirectory, htmlDocument.Key));
+            }
+        }
     }
 
     private void ProcessComponentsRecursive(IDictionary<string, HtmlNode> componentDefinitionsToProcess)
