@@ -1,7 +1,4 @@
-﻿using System.IO.Enumeration;
-using System.Reflection;
-using HtmlAgilityPack;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace NoScriptHTML;
 

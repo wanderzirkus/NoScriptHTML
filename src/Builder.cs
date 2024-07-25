@@ -1,7 +1,7 @@
 public class Builder : IBuilder
 {
     private readonly ICopy myCopy;
-    private IEnumerable<IProcessFiles> myFileProcessors;
+    private readonly IEnumerable<IProcessFiles> myFileProcessors;
 
     public Builder(ICopy copy, IEnumerable<IProcessFiles> fileProcessors)
     {
